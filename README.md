@@ -1,5 +1,5 @@
-# New Google Algo for finding words in C++
-Google Algorithm for searching words in C++
+# New Google Algo for finding words in .NET
+Google Algorithm for searching words in .NET
 
 Alan Maldonado
 Andree Marco
