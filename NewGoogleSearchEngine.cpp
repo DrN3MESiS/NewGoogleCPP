@@ -76,22 +76,24 @@ class Trie{
 };
 
 int main(){
-	Trie trie;
+	Trie Google;
 	
-	trie.insertWord("hola");
-	cout << trie.findWord("hola") << endl;
+	int I_COUNT, Q_COUNT;
+	cin >> I_COUNT >> Q_COUNT;
 	
-	int wordCount;
-	cin >> wordCount;
-	
-	for(int i = 0; i < wordCount; i++){
+	for(int i = 0; i < I_COUNT; i++){
 		string wordToInsert;
 		cin >> wordToInsert;
 		
-		trie.insertWord(wordToInsert);
+		Google.insertWord(wordToInsert);
 	}
 	
-	string wordToSearch;
+	for(int i = 0; i < Q_COUNT; i++){
+		string prefix;
+		cin >> prefix;
+		
+		Google.findWord(prefix);
+	}
 	
-	return false;
+	return 0;
 }
