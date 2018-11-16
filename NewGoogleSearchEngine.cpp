@@ -62,7 +62,6 @@ class Trie{
 		}
 		
 		Node *curNode = H[k];
-		
 		for(int i = 1; i < word.length(); i++){
 			k = word[i] - 'a';
 			if(curNode->X[k] == NULL){
