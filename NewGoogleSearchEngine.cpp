@@ -60,7 +60,7 @@ class Trie{
 		if(H[k] == NULL){
 			return false;
 		}
-		
+		//sada
 		Node *curNode = H[k];
 		for(int i = 1; i < word.length(); i++){
 			k = word[i] - 'a';
