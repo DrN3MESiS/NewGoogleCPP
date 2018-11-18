@@ -85,7 +85,7 @@ bool searchAdyacent(struct TrieNode *root, string key)
     } 
   
     return (pCrawl != NULL && pCrawl->isEndOfWord); 
-} 
+}
   
 // Driver 
 int main() 
@@ -126,7 +126,14 @@ int main()
             cout << "La palabra no esta en el Trie (Esto no es un prefijo) == " << prefix[i] << "\n";
         }
         
-        searchAdyacent(root, prefix[i];
+        searchAdyacent(root, prefix[i]);
     }
     return 0; 
 } 
+
+/*
+
+La solucion de busqueda es aplicar un DFS en el nodo en el que se quedo y para todos los hijos de todos los nodos siguientes 
+Recordar imprimir el prefijo antes de imprimir los nodos hijos cuando el DFS se queda sin camino y regresa al nodo inicial 
+
+*/
