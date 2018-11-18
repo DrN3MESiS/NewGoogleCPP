@@ -1,98 +1,111 @@
 #include<iostream>
 #include<cstring>
 #include<cmath>
+#include<bits/stdc++.h> 
 
-using namespace std;
-
-class Node{
-	public:
-		
-	char val;
-	Node *X[25];
-	bool isWord;
-	
-	Node(char c = '#', bool isWord = false){
-		this->val = c;
-		this->isWord = isWord;
-		
-		for(int i = 0; i < 25; i++){
-			this->X[i] = NULL;
-		}
-	}
-};
-
-class Trie{
-	private:
-		Node *H[25];
-		
-	public:
-		
-	Trie(){
-		for(int i = 0; i < 25; i++){
-			this->H[i] = NULL;
-		}
-	}
-	
-	void insertWord(string word){
-		int k = word[0] - 'a';
-		
-		if(H[k] == NULL){
-			H[k] = new Node(word[0], false);
-		}
-		
-		Node *curNode = H[k];
-		
-		for(int i = 1; i < word.length(); i++){
-			k = word[i] - 'a';
-			if(curNode->X[k] == NULL){
-				curNode->X[k] = new Node(word[i], false);
-			} else {
-				curNode = curNode->X[k];
-			}
-		}
-		
-		curNode->isWord = true;
-	}
-	
-	bool findWord(string word){
-		int k = word[0] - 'a';
-		
-		if(H[k] == NULL){
-			return false;
-		}
-		//sada
-		Node *curNode = H[k];
-		for(int i = 1; i < word.length(); i++){
-			k = word[i] - 'a';
-			if(curNode->X[k] == NULL){
-				return false;
-			} else {
-				curNode = curNode->X[k];
-			}
-		}		
-		return curNode->isWord;
-	}
-};
-
-int main(){
-	Trie Google;
-	
-	int I_COUNT, Q_COUNT;
+using namespace std; 
+  
+const int ALPHABET_SIZE = 26; 
+  
+// trie node 
+struct TrieNode 
+{ 
+    struct TrieNode *children[ALPHABET_SIZE]; 
+  
+    // isEndOfWord is true if the node represents 
+    // end of a word 
+    bool isEndOfWord; 
+}; 
+  
+// Returns new trie node (initialized to NULLs) 
+struct TrieNode *getNode(void) 
+{ 
+    struct TrieNode *pNode =  new TrieNode; 
+  
+    pNode->isEndOfWord = false; 
+  
+    for (int i = 0; i < ALPHABET_SIZE; i++) 
+        pNode->children[i] = NULL; 
+  
+    return pNode; 
+} 
+  
+// If not present, inserts key into trie 
+// If the key is prefix of trie node, just 
+// marks leaf node 
+void insert(struct TrieNode *root, string key) 
+{ 
+    struct TrieNode *pCrawl = root; 
+  
+    for (int i = 0; i < key.length(); i++) 
+    { 
+        int index = key[i] - 'a'; 
+        if (!pCrawl->children[index]) 
+            pCrawl->children[index] = getNode(); 
+  
+        pCrawl = pCrawl->children[index]; 
+    } 
+  
+    // mark last node as leaf 
+    pCrawl->isEndOfWord = true; 
+} 
+  
+// Returns true if key presents in trie, else 
+// false 
+bool search(struct TrieNode *root, string key) 
+{ 
+    struct TrieNode *pCrawl = root; 
+  
+    for (int i = 0; i < key.length(); i++) 
+    { 
+        int index = key[i] - 'a'; 
+        if (!pCrawl->children[index]) 
+            return false; 
+  
+        pCrawl = pCrawl->children[index]; 
+    } 
+  
+    return (pCrawl != NULL && pCrawl->isEndOfWord); 
+} 
+  
+// Driver 
+int main() 
+{ 
+    int I_COUNT, Q_COUNT;
 	cin >> I_COUNT >> Q_COUNT;
-	
-	for(int i = 0; i < I_COUNT; i++){
-		string wordToInsert;
-		cin >> wordToInsert;
-		
-		Google.insertWord(wordToInsert);
+    
+    string keys[I_COUNT]; //arreglo que tendra todas las palabras del usuario 
+    string prefix[Q_COUNT]; //arreglo que guardara todos los prefijos que se preguntaran
+    
+    for(int i = 0; i < I_COUNT; i++)
+    {
+		cin >> keys[i]; //ingresar cada una de las palabras al diccionario
 	}
 	
-	for(int i = 0; i < Q_COUNT; i++){
-		string prefix;
-		cin >> prefix;
-		
-		Google.findWord(prefix);
+	for(int i = 0; i < Q_COUNT; i++)
+    {
+		cin >> prefix[i];//ingresar cada uno de los prefijos a preguntar
 	}
-	
-	return 0;
-}
+  
+    struct TrieNode *root = getNode(); //Creacion del Trie como Struct
+  
+    // Funcion para construir el Diccionario
+    for (int i = 0; i < I_COUNT; i++)
+    {
+        insert(root, keys[i]); 
+    }
+    
+    // Buscar prefijo dentro del Trie
+    for(int i = 0; i < Q_COUNT; i++)
+    {
+        if(search(root, prefix[i]))
+        {
+            cout << "True";
+        }
+            else 
+        {
+            cout << "False";
+        }
+    }
+    return 0; 
+} 
