@@ -1,28 +1,22 @@
-#include<iostream>
-#include<cstring>
-#include<cmath>
 #include<bits/stdc++.h> 
-
 using namespace std; 
-  
-const int ALPHABET_SIZE = 25; 
-  
-// trie node 
+
+#define ALPHABET_SIZE (26) 
+
+#define CHAR_TO_INDEX(c) ((int)c - (int)'a') 
+
+#define NO_RESULT "no recommendations"
+
 struct TrieNode 
 { 
     struct TrieNode *children[ALPHABET_SIZE]; 
-  
-    // isEndOfWord is true if the node represents 
-    // end of a word 
-    bool isEndOfWord; 
+    bool isWordEnd; 
 }; 
   
-// Returns new trie node (initialized to NULLs) 
 struct TrieNode *getNode(void) 
 { 
-    struct TrieNode *pNode =  new TrieNode; 
-  
-    pNode->isEndOfWord = false; 
+    struct TrieNode *pNode = new TrieNode; 
+    pNode->isWordEnd = false; 
   
     for (int i = 0; i < ALPHABET_SIZE; i++) 
         pNode->children[i] = NULL; 
@@ -30,67 +24,106 @@ struct TrieNode *getNode(void)
     return pNode; 
 } 
   
-// If not present, inserts key into trie 
-// If the key is prefix of trie node, just 
-// marks leaf node 
-void insert(struct TrieNode *root, string key) //La funcion requiere la variable del Trie y la palabra a analizar
+void insert(struct TrieNode *root,  const string key) 
 { 
-    struct TrieNode *pCrawl = root;  //Cada letra se convierte en su propio alphabet
+    struct TrieNode *pCrawl = root; 
   
-    for (int i = 0; i < key.length(); i++) //Toma la palabra, y la examina, letra por letra.
+    for (int level = 0; level < key.length(); level++) 
     { 
-        int index = key[i] - 'a'; //Calcula la posicion de la primera letra del string en el arreglo del alphabet
-        if (!pCrawl->children[index])  //Si la letra esta dentro del abecedario, no hace nada, pero si no esta, llama a crear 
-            pCrawl->children[index] = getNode(); //agregamos el hijo que no tiene
+        int index = CHAR_TO_INDEX(key[level]); 
+        if (!pCrawl->children[index]) 
+            pCrawl->children[index] = getNode(); 
   
-        pCrawl = pCrawl->children[index]; //el nuevo inicio sera la letra en la que se quedo
-    } 
-  
-    pCrawl->isEndOfWord = true; //El ultimo nodo se convierte en un nuevo hijo.
-} 
-  
-// Returns true if key presents in trie, else 
-// false 
-bool search(struct TrieNode *root, string key) 
-{ 
-    struct TrieNode *pCrawl = root; //Cada letra se convierte en su propio alphabet
-  
-    for (int i = 0; i < key.length(); i++) 
-    { 
-        int index = key[i] - 'a'; 
-        if (!pCrawl->children[index])
-        {
-            return false; 
-        }
-        
         pCrawl = pCrawl->children[index]; 
     } 
   
-    return (pCrawl != NULL && pCrawl->isEndOfWord); 
+    pCrawl->isWordEnd = true; 
 } 
+   
+bool search(struct TrieNode *root, const string key) 
+{ 
+    int length = key.length(); 
+    struct TrieNode *pCrawl = root; 
+    for (int level = 0; level < length; level++) 
+    { 
+        int index = CHAR_TO_INDEX(key[level]); 
+  
+        if (!pCrawl->children[index]) 
+            return false; 
+  
+        pCrawl = pCrawl->children[index]; 
+    } 
+  
+    return (pCrawl != NULL && pCrawl->isWordEnd); 
+} 
+  
+bool isLastNode(struct TrieNode* root) 
+{ 
+    for (int i = 0; i < ALPHABET_SIZE; i++) 
+        if (root->children[i]) 
+            return 0; 
+    return 1; 
+} 
+  
+void suggestionsRec(struct TrieNode* root, string currPrefix) 
+{ 
+    if (root->isWordEnd) 
+    { 
+        cout << currPrefix; 
+        cout << endl; 
+    } 
+  
+    if (isLastNode(root)) 
+        return; 
+  
+    for (int i = 0; i < ALPHABET_SIZE; i++) 
+    { 
+        if (root->children[i]) 
+        { 
+            currPrefix.push_back(97 + i); 
+  
+            suggestionsRec(root->children[i], currPrefix); 
+        } 
+    } 
+} 
+  
+int printAutoSuggestions(TrieNode* root, const string query) 
+{ 
+    struct TrieNode* pCrawl = root; 
 
-bool searchAdyacent(struct TrieNode *root, string key) 
-{ 
-    struct TrieNode *pCrawl = root; //Cada letra se convierte en su propio alphabet
-  
-    for (int i = 0; i < key.length(); i++) 
+    int level; 
+    int n = query.length(); 
+    for (level = 0; level < n; level++) 
     { 
-        int index = key[i] - 'a'; 
-        if (!pCrawl->children[index])
-        {
-            return false; 
-        }
-        
+        int index = CHAR_TO_INDEX(query[level]); 
+  
+        if (!pCrawl->children[index]) 
+            return 0; 
+  
         pCrawl = pCrawl->children[index]; 
     } 
   
-    return (pCrawl != NULL && pCrawl->isEndOfWord); 
-}
+    bool isWord = (pCrawl->isWordEnd == true); 
   
-// Driver 
+    bool isLast = isLastNode(pCrawl); 
+  
+    if (isWord && isLast) 
+    { 
+        cout << query << endl; 
+        return -1; 
+    } 
+  
+    if (!isLast) 
+    { 
+        string prefix = query; 
+        suggestionsRec(pCrawl, prefix); 
+        return 1; 
+    } 
+} 
+  
 int main() 
 { 
-    int I_COUNT, Q_COUNT;
+	int I_COUNT, Q_COUNT;
 	cin >> I_COUNT >> Q_COUNT;
     
     string wordsToInsert[I_COUNT]; //arreglo que tendra todas las palabras del usuario 
@@ -117,23 +150,12 @@ int main()
     // Buscar prefijo dentro del Trie
     for(int i = 0; i < Q_COUNT; i++)
     {
-        if(search(root, prefix[i]))
-        {
-            cout << "La palabra si esta en el Trie (Esto no es un prefijo) == " << prefix[i] << "\n";
-        }
-            else 
-        {
-            cout << "La palabra no esta en el Trie (Esto no es un prefijo) == " << prefix[i] << "\n";
-        }
-        
-        searchAdyacent(root, prefix[i]);
+    	int comp = printAutoSuggestions(root, wordsToInsert[i]); 
+    	if (comp == 0)
+    	{
+    		cout << NO_RESULT;	
+		}
     }
-    return 0; 
+    return 0;
+
 } 
-
-/*
-
-La solucion de busqueda es aplicar un DFS en el nodo en el que se quedo y para todos los hijos de todos los nodos siguientes 
-Recordar imprimir el prefijo antes de imprimir los nodos hijos cuando el DFS se queda sin camino y regresa al nodo inicial 
-
-*/
