@@ -1,6 +1,5 @@
 		#include<cstring>
 		#include<iostream>
-		#include<bits/stdc++.h> 
 		
 		using namespace std; 
 		
@@ -10,15 +9,15 @@
 		
 		#define NO_RESULT "no recommendations"
 		  
-		struct TrieNode 
+		struct Trie 
 		{ 
-		    struct TrieNode *children[ALPHABET_SIZE]; 
+		    struct Trie *children[ALPHABET_SIZE]; 
 		    bool isWordEnd; 
 		}; 
 		  
-		struct TrieNode *getNode(void) 
+		struct Trie *getNode(void) 
 		{ 
-		    struct TrieNode *pNode = new TrieNode; 
+		    struct Trie *pNode = new Trie; 
 		    pNode->isWordEnd = false; 
 		  
 		    for (int i = 0; i < ALPHABET_SIZE; i++) 
@@ -27,9 +26,9 @@
 		    return pNode; 
 		} 
 		  
-		void insert(struct TrieNode *root,  const string key) 
+		void insertWordToTrie(struct Trie *root,  const string key) 
 		{ 
-		    struct TrieNode *pCrawl = root; 
+		    struct Trie *pCrawl = root; 
 		  
 		    for (int level = 0; level < key.length(); level++) 
 		    { 
@@ -42,10 +41,10 @@
 		    pCrawl->isWordEnd = true; 
 		} 
 		  
-		bool search(struct TrieNode *root, const string key) 
+		bool searchWordInTrie(struct Trie *root, const string key) 
 		{ 
 		    int length = key.length(); 
-		    struct TrieNode *pCrawl = root; 
+		    struct Trie *pCrawl = root; 
 		    for (int level = 0; level < length; level++) 
 		    { 
 		        int index = CHAR_TO_INDEX(key[level]); 
@@ -59,7 +58,7 @@
 		    return (pCrawl != NULL && pCrawl->isWordEnd); 
 		} 
 		  
-		bool isLastNode(struct TrieNode* root) 
+		bool isLastNode(struct Trie* root) 
 		{ 
 		    for (int i = 0; i < ALPHABET_SIZE; i++) 
 		        if (root->children[i]) 
@@ -67,7 +66,7 @@
 		    return 1; 
 		} 
 		
-		void suggestionsRec(struct TrieNode* root, string currPrefix) 
+		void wordMatches(struct Trie* root, string currPrefix) 
 		{ 
 		    if (root->isWordEnd) 
 		    { 
@@ -83,14 +82,14 @@
 		        if (root->children[i]) 
 		        { 
 		            currPrefix.push_back(97 + i); 
-		            suggestionsRec(root->children[i], currPrefix); 
+		            wordMatches(root->children[i], currPrefix); 
 		        } 
 		    } 
 		} 
 		  
-		int printAutoSuggestions(TrieNode* root, const string query) 
+		int SearchForMatches Trie* root, const string query) 
 		{ 
-		    struct TrieNode* pCrawl = root; 
+		    struct Trie* pCrawl = root; 
 		
 		    int level; 
 		    int n = query.length(); 
@@ -117,13 +116,13 @@
 		    if (!isLast) 
 		    { 
 		        string prefix = query; 
-		        suggestionsRec(pCrawl, prefix); 
+		        wordMatches(pCrawl, prefix); 
 		        return 1; 
 		    } 
 		} 
 		int main() 
 		{ 
-			struct TrieNode *root = getNode(); //Creacion del Trie como Struct
+			struct Trie *root = getNode(); //Creacion del Trie como Struct
 			int I_COUNT, Q_COUNT;
 			cin >> I_COUNT >> Q_COUNT;
 		    
@@ -133,7 +132,7 @@
 		    {
 		    	string key;
 				cin >> key;
-				insert(root, key); //ingresar cada una de las palabras al diccionario
+				insertWordToTrie(root, key); //ingresar cada una de las palabras al diccionario
 			}
 			
 			for(int i = 0; i < Q_COUNT; i++)
@@ -146,7 +145,7 @@
 		    // Buscar prefijo dentro del Trie
 		    for(int i = 0; i < Q_COUNT; i++)
 		    {
-		    	int comp = printAutoSuggestions(root, prefix[i]); 
+		    	int comp = SearchForMatches(root, prefix[i]); 
 		    	cout << "\n";
 		    	if (comp == 0)
 		    	{
