@@ -87,7 +87,7 @@
 		    } 
 		} 
 		  
-		int SearchForMatches Trie* root, const string query) 
+		int SearchForMatches(Trie* root, const string query) 
 		{ 
 		    struct Trie* pCrawl = root; 
 		
