@@ -12,6 +12,7 @@
 using namespace std;
 
 //Estructura para Trie
+string currPref;
 
 struct TRIE{ //Struct Base para el Trie
 	int isFilled; //Variable que determina si el Trie tiene elementos o no
@@ -69,9 +70,12 @@ void addWordToTrie(struct TRIE *BaseRoot, string str){
 	BaseRoot->isFilled = 1; //Marcamos el Trie que tenemos como lleno
 }
 void SearchForWordInTrie_util(struct TRIE *BaseRoot, string tmp){
+	int maxSize = currPref.size() + 6;
 	
 	if(BaseRoot->isFilled == 1){ //Si el trie tiene elementos dentro, imprimimos el prefijo
-		cout << tmp << "\n";	
+		if(tmp.size() < maxSize){
+			cout << tmp << "\n";
+		}
 	}
 		
 	for (int i = 0; i < 26; i++){
@@ -81,6 +85,7 @@ void SearchForWordInTrie_util(struct TRIE *BaseRoot, string tmp){
 	}
 }
 void SearchForWordInTrie(struct TRIE *BaseRoot, string str){
+	currPref = str;
 	string tmp=""; //Nuestro prefijo
 	int abcPos; //Posicion en el abecedario
 	for(int i = 0; i < str.length(); i++){
