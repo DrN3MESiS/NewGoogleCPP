@@ -27,9 +27,9 @@ struct TRIE* createTrieNodes(){ //Funcion para inicializar el Trie
 }
 
 //Relaciones a Funciones
-void addWordToTrie(struct TRIE *curr, string str);
-void SearchForWordInTrie_util(struct TRIE *curr, string tmp);
-void SearchForWordInTrie(struct TRIE *curr, string str);
+void addWordToTrie(struct TRIE *BaseRoot, string str);
+void SearchForWordInTrie_util(struct TRIE *BaseRoot, string tmp);
+void SearchForWordInTrie(struct TRIE *BaseRoot, string str);
 
 // Funcionalidad del Programa
 
@@ -54,37 +54,37 @@ int main(){
 	return 0; //Terminamos
 }
 
-void addWordToTrie(struct TRIE *curr, string str){
+void addWordToTrie(struct TRIE *BaseRoot, string str){
 	int abcPos; //Variable que determinara la posicion de las letras de la palabra en el abecedario
 	for (int i = 0; i < str.length(); i++){
 		abcPos = str[i]-'a'; //Calculamos la posicion de cada letra.
-		if(curr->child[abcPos] == NULL){ //Si la posicion en nuestro arreglo de abecedario esta vacia, creamos un nuevo trie a partir de esa letra
-			curr->child[abcPos] = createTrieNodes();
+		if(BaseRoot->child[abcPos] == NULL){ //Si la posicion en nuestro arreglo de abecedario esta vacia, creamos un nuevo trie a partir de esa letra
+			BaseRoot->child[abcPos] = createTrieNodes();
 		}
-		curr = curr->child[abcPos]; //Si la condicion de arriba no se cumple, significa que hay un nodo en esa letra, por lo tanto se agrega como hijo
+		BaseRoot = BaseRoot->child[abcPos]; //Si la condicion de arriba no se cumple, significa que hay un nodo en esa letra, por lo tanto se agrega como hijo
 	}
-	curr->isFilled = 1; //Marcamos el Trie que tenemos como lleno
+	BaseRoot->isFilled = 1; //Marcamos el Trie que tenemos como lleno
 }
-void SearchForWordInTrie_util(struct TRIE *curr, string tmp){
-	if(curr->isFilled == 1){ //Si el trie tiene elementos dentro, imprimimos el prefijo
+void SearchForWordInTrie_util(struct TRIE *BaseRoot, string tmp){
+	if(BaseRoot->isFilled == 1){ //Si el trie tiene elementos dentro, imprimimos el prefijo
 		cout << tmp << endl;
 	}
 	for (int i = 0; i < 26; i++){
-		if(curr->child[i] != NULL){ //Se buscaran todos los tries que le sigan al trie de la ultima letra del prefijo
-			SearchForWordInTrie_util(curr->child[i], tmp + (char)(i+'a'));
+		if(BaseRoot->child[i] != NULL){ //Se buscaran todos los tries que le sigan al trie de la ultima letra del prefijo
+			SearchForWordInTrie_util(BaseRoot->child[i], tmp + (char)(i+'a'));
 		}
 	}
 }
-void SearchForWordInTrie(struct TRIE *curr, string str){
+void SearchForWordInTrie(struct TRIE *BaseRoot, string str){
 	string tmp=""; //Nuestro prefijo
 	int abcPos; //Posicion en el abecedario
 	for(int i = 0; i < str.length(); i++){
 		abcPos = str[i]-'a'; //Calculamos la posicion
 		tmp += (str[i]); //Re-declaramos nuestro prefij
-		if(curr->child[abcPos] == NULL){//Se verifica si ya no hay elementos dentro del ultimo trie, si es asi, terminamos la busqueda
+		if(BaseRoot->child[abcPos] == NULL){//Se verifica si ya no hay elementos dentro del ultimo trie, si es asi, terminamos la busqueda
 			return; 
 		}
-		curr = curr->child[abcPos]; // Si la condicion no se completa, seguimos verificando ese ultimo trie
+		BaseRoot = BaseRoot->child[abcPos]; // Si la condicion no se completa, seguimos verificando ese ultimo trie
 	}
-	SearchForWordInTrie_util(curr, tmp); //Llamamos a la funcion que determina las palabras que coinciden/inician con el prefijo
+	SearchForWordInTrie_util(BaseRoot, tmp); //Llamamos a la funcion que determina las palabras que coinciden/inician con el prefijo
 }
