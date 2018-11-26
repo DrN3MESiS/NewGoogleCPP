@@ -1,4 +1,4 @@
-/* ==== Estructura de Datos ===== */
+ /* ==== Estructura de Datos ===== */
 /*          App made by:          */
 /* Alan Enrique Maldonado Navarro */
 /*        Andree Marco Ruiz       */
@@ -13,6 +13,7 @@ using namespace std;
 
 //Estructura para Trie
 string currPref;
+int isThereMore = 0, cicleNo=0;
 
 struct TRIE{ //Struct Base para el Trie
 	int isFilled; //Variable que determina si el Trie tiene elementos o no
@@ -21,7 +22,7 @@ struct TRIE{ //Struct Base para el Trie
 
 struct TRIE* createTrieNodes(){ //Funcion para inicializar el Trie
 	struct TRIE * tmp = (struct TRIE*)malloc(sizeof(struct TRIE)); //Copia del Trie Original
-	tmp->isFilled=0; //Declaramos que el trie es vacio
+	tmp->isFilled = 0; //Declaramos que el trie es vacio
 	for (int i = 0; i < 26; i++){ //Rellenamos el ABC con NULL
 		tmp->Alphabet[i] = NULL;
 	}
@@ -52,7 +53,11 @@ int main(){
 		cin >> PrefixToSearchArray[i];
 	}
 	for(int i = 0; i < Q_COUNT; i++){ //Buscamos los prefijos del arreglo en el Trie
+	    cicleNo=0;
 		SearchForWordInTrie(TrieRoot, PrefixToSearchArray[i]); //Buscamos el prefijo en la posicion i del arreglo con cada iteracion.
+		if(isThereMore >= 1 && cicleNo < 1){
+				cout << NO_RESULT<< "\n";
+			}
 		cout << "\n";
 	}
 	return 0; //Terminamos
@@ -74,7 +79,10 @@ void SearchForWordInTrie_util(struct TRIE *BaseRoot, string tmp){
 	
 	if(BaseRoot->isFilled == 1){ //Si el trie tiene elementos dentro, imprimimos el prefijo
 		if(tmp.size() < maxSize){
+		    cicleNo++;
 			cout << tmp << "\n";
+		} else {
+			isThereMore++;
 		}
 	}
 		
@@ -82,9 +90,11 @@ void SearchForWordInTrie_util(struct TRIE *BaseRoot, string tmp){
 		if(BaseRoot->Alphabet[i] != NULL){ //Se buscaran todos los tries que le sigan al trie de la ultima letra del prefijo
 			SearchForWordInTrie_util(BaseRoot->Alphabet[i], tmp + (char)(i+'a'));
 		}
-	}
+		
+	} 
 }
 void SearchForWordInTrie(struct TRIE *BaseRoot, string str){
+	isThereMore = 0;
 	currPref = str;
 	string tmp=""; //Nuestro prefijo
 	int abcPos; //Posicion en el abecedario
