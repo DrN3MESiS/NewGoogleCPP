@@ -78,7 +78,7 @@ void SearchForWordInTrie_util(struct TRIE *BaseRoot, string tmp){
 	int maxSize = currPref.size() + 6;
 	
 	if(BaseRoot->isFilled == 1){ //Si el trie tiene elementos dentro, imprimimos el prefijo
-		if(tmp.size() < maxSize){
+		if(tmp.size() > currPref.size() && tmp.size() < maxSize){
 		    cicleNo++;
 			cout << tmp << "\n";
 		} else {
