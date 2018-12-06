@@ -36,7 +36,7 @@ void SearchForWordInTrie(struct TRIE *BaseRoot, string str);
 
 // Funcionalidad del Programa
 
-int main(){
+int main(int argc, char *argv[]){
 	cin.tie(0);
 	ios_base::sync_with_stdio(0);
 	int I_COUNT, Q_COUNT; //Variables que seran las veces que se ingresaran palabras y los prefijos a buscar
