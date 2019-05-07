@@ -1,5 +1,4 @@
-# New Google Algo for finding words in C++
-Google Algorithm for searching words in C++
+# [C++] Trie Algorithm for Word Searching in Real-time.
+Based on the Google Search Engine Algorithm
 
-Alan Maldonado
-Andree Marco
+Author: Alan Enrique Maldonado Navarro
